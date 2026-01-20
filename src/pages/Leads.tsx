@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Plus, Filter, Search } from 'lucide-react';
 import { Lead, LeadStatus } from '@/types/crm';
 import { mockLeads, statusConfig } from '@/data/mockData';
@@ -16,13 +17,21 @@ import {
 import { toast } from 'sonner';
 
 export default function Leads() {
+  const [searchParams] = useSearchParams();
   const [leads, setLeads] = useState<Lead[]>(mockLeads);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<LeadStatus | 'all'>('all');
 
+  useEffect(() => {
+    const filter = searchParams.get('filter');
+    if (filter && Object.keys(statusConfig).includes(filter)) {
+      setStatusFilter(filter as LeadStatus);
+    }
+  }, [searchParams]);
+
   const filteredLeads = leads.filter((lead) => {
-    const matchesSearch = 
+    const matchesSearch =
       lead.businessName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       lead.contactName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || lead.status === statusFilter;
@@ -30,8 +39,8 @@ export default function Leads() {
   });
 
   const handleStatusChange = (leadId: string, newStatus: LeadStatus) => {
-    setLeads(leads.map(lead => 
-      lead.id === leadId 
+    setLeads(leads.map(lead =>
+      lead.id === leadId
         ? { ...lead, status: newStatus, updatedAt: new Date() }
         : lead
     ));
@@ -55,6 +64,13 @@ export default function Leads() {
     });
   };
 
+  const handleInteractionLog = (leadId: string, type: 'call' | 'whatsapp', result: string, notes: string) => {
+    toast.success('Interacción registrada', {
+      description: `${type === 'call' ? 'Llamada' : 'WhatsApp'} marcada como: ${result}`,
+    });
+    // Here we would actually save to DB/State
+  };
+
   const leadCounts = {
     all: leads.length,
     nuevo: leads.filter(l => l.status === 'nuevo').length,
@@ -74,7 +90,7 @@ export default function Leads() {
             Gestiona tus prospectos y oportunidades
           </p>
         </div>
-        <Button 
+        <Button
           onClick={() => setIsAddDialogOpen(true)}
           size="lg"
           className="gap-2"
@@ -120,11 +136,10 @@ export default function Leads() {
           <button
             key={key}
             onClick={() => setStatusFilter(key as LeadStatus)}
-            className={`flex-1 p-3 rounded-lg transition-all ${
-              statusFilter === key 
-                ? 'bg-primary text-primary-foreground' 
-                : 'bg-muted/50 hover:bg-muted'
-            }`}
+            className={`flex-1 p-3 rounded-lg transition-all ${statusFilter === key
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-muted/50 hover:bg-muted'
+              }`}
           >
             <div className="text-2xl font-bold">{leadCounts[key as LeadStatus]}</div>
             <div className="text-sm">{config.label}</div>
@@ -143,6 +158,7 @@ export default function Leads() {
               lead={lead}
               onStatusChange={handleStatusChange}
               onGenerateMessage={handleGenerateMessage}
+              onInteractionLog={handleInteractionLog}
             />
           </div>
         ))}

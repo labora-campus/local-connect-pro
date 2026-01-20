@@ -1,9 +1,13 @@
 import { TrendingUp, Euro, Globe, UserPlus, Megaphone } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { KPICard } from '@/components/dashboard/KPICard';
 import { AnnouncementCard } from '@/components/dashboard/AnnouncementCard';
-import { mockKPIs, mockAnnouncements, currentUser } from '@/data/mockData';
+import { RecentActivity } from '@/components/dashboard/RecentActivity';
+import { mockKPIs, mockAnnouncements, currentUser, mockLeads } from '@/data/mockData';
 
 export default function Dashboard() {
+  const navigate = useNavigate();
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -24,6 +28,7 @@ export default function Dashboard() {
           icon={<TrendingUp className="w-6 h-6" />}
           variant="primary"
           subtitle="Este mes"
+          onClick={() => navigate('/leads?filter=cerrado')}
         />
         <KPICard
           title="Facturación"
@@ -37,30 +42,38 @@ export default function Dashboard() {
           value={mockKPIs.portalesEnProvincia}
           icon={<Globe className="w-6 h-6" />}
           subtitle="Activos"
+          onClick={() => navigate('/portales')}
         />
         <KPICard
           title="Leads Nuevos"
           value={mockKPIs.leadsNuevos}
           icon={<UserPlus className="w-6 h-6" />}
           subtitle="Pendientes de contactar"
+          onClick={() => navigate('/leads?filter=nuevo')}
         />
       </div>
 
-      {/* Announcements */}
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Megaphone className="w-5 h-5 text-primary" />
-          <h2 className="text-title text-foreground">Avisos de Central</h2>
-        </div>
-        <div className="space-y-3">
-          {mockAnnouncements.map((announcement, index) => (
-            <div
-              key={announcement.id}
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <AnnouncementCard announcement={announcement} />
-            </div>
-          ))}
+      {/* Recent Activity & Announcements Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Recent Activity */}
+        <RecentActivity leads={mockLeads} />
+
+        {/* Announcements */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Megaphone className="w-5 h-5 text-primary" />
+            <h2 className="text-title text-foreground">Avisos de Central</h2>
+          </div>
+          <div className="space-y-3">
+            {mockAnnouncements.map((announcement, index) => (
+              <div
+                key={announcement.id}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <AnnouncementCard announcement={announcement} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
