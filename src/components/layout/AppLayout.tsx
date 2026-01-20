@@ -1,9 +1,10 @@
 import { ReactNode, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Globe, 
+import {
+  LogOut,
+  LayoutDashboard,
+  Users,
+  Globe,
   Menu,
   X,
   MapPin,
@@ -13,6 +14,8 @@ import {
 import { cn } from '@/lib/utils';
 import { currentUser } from '@/data/mockData';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -27,12 +30,17 @@ const navItems = [
 export function AppLayout({ children }: AppLayoutProps) {
   const location = useLocation();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    toast.success('Sesión cerrada correctamente');
+  };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop Sidebar */}
-      <aside 
+      <aside
         className={cn(
           "fixed left-0 top-0 z-40 h-screen bg-sidebar transition-all duration-300 hidden lg:flex flex-col",
           sidebarCollapsed ? "w-16" : "w-64"
@@ -81,8 +89,8 @@ export function AppLayout({ children }: AppLayoutProps) {
                 to={item.path}
                 className={cn(
                   "flex items-center gap-3 px-3 py-3 rounded-lg transition-all duration-200",
-                  isActive 
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground" 
+                  isActive
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
                     : "text-sidebar-foreground hover:bg-sidebar-accent",
                   sidebarCollapsed && "justify-center"
                 )}
@@ -111,6 +119,15 @@ export function AppLayout({ children }: AppLayoutProps) {
                   {currentUser.email}
                 </p>
               </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                className="text-sidebar-foreground hover:text-red-500 hover:bg-sidebar-accent"
+                title="Cerrar sesión"
+              >
+                <LogOut className="w-5 h-5" />
+              </Button>
             </div>
           </div>
         )}
@@ -127,6 +144,14 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="flex items-center gap-2 text-muted-foreground text-sm">
           <MapPin className="w-4 h-4" />
           <span>{currentUser.province}</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleLogout}
+            className="ml-1 text-muted-foreground hover:text-red-500"
+          >
+            <LogOut className="w-4 h-4" />
+          </Button>
         </div>
       </header>
 
@@ -148,7 +173,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       </nav>
 
       {/* Main Content */}
-      <main 
+      <main
         className={cn(
           "min-h-screen transition-all duration-300",
           "pt-16 pb-24 lg:pt-0 lg:pb-0",
