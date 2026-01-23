@@ -7,6 +7,9 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import Index from "./pages/Index";
 import Leads from "./pages/Leads";
 import Portales from "./pages/Portales";
+import Ventas from "./pages/Ventas";
+import Comisiones from "./pages/Comisiones";
+import Agenda from "./pages/Agenda";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -32,6 +35,9 @@ const App = () => (
                       <Route path="/" element={<Index />} />
                       <Route path="/leads" element={<Leads />} />
                       <Route path="/portales" element={<Portales />} />
+                      <Route path="/ventas" element={<Ventas />} />
+                      <Route path="/comisiones" element={<Comisiones />} />
+                      <Route path="/agenda" element={<Agenda />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </AppLayout>

@@ -32,9 +32,7 @@ export default function Login() {
         <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
             <div className="w-full max-w-md space-y-8 animate-fade-in">
                 <div className="text-center space-y-2">
-                    <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center mx-auto mb-4">
-                        <span className="text-primary-foreground font-bold text-xl">M</span>
-                    </div>
+                    <img src="/logo.png" alt="Multicentros Logo" className="w-32 h-32 object-contain mx-auto mb-4" />
                     <h1 className="text-3xl font-bold tracking-tight text-foreground">
                         Multicentros CRM
                     </h1>

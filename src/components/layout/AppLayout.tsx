@@ -9,7 +9,10 @@ import {
   X,
   MapPin,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ShoppingBag,
+  DollarSign,
+  Calendar
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { currentUser } from '@/data/mockData';
@@ -25,6 +28,9 @@ const navItems = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/leads', label: 'Leads', icon: Users },
   { path: '/portales', label: 'Portales', icon: Globe },
+  { path: '/ventas', label: 'Ventas', icon: ShoppingBag },
+  { path: '/comisiones', label: 'Comisiones', icon: DollarSign },
+  { path: '/agenda', label: 'Agenda', icon: Calendar },
 ];
 
 export function AppLayout({ children }: AppLayoutProps) {
@@ -50,8 +56,8 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
           {!sidebarCollapsed && (
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-sidebar-primary flex items-center justify-center">
-                <span className="text-sidebar-primary-foreground font-bold text-lg">M</span>
+              <div className="bg-white p-1 rounded-full shrink-0">
+                <img src="/logo.png" alt="Multicentros Logo" className="w-12 h-12 object-contain" />
               </div>
               <div>
                 <h1 className="text-sidebar-foreground font-semibold">Multicentros</h1>
@@ -136,9 +142,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-card border-b border-border h-16 flex items-center justify-between px-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <span className="text-primary-foreground font-bold">M</span>
-          </div>
+          <img src="/logo.png" alt="Multicentros Logo" className="w-8 h-8 object-contain" />
           <span className="font-semibold text-foreground">Multicentros</span>
         </div>
         <div className="flex items-center gap-2 text-muted-foreground text-sm">
