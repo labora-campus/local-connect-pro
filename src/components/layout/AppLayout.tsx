@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import {
   LogOut,
   LayoutDashboard,
@@ -34,13 +34,30 @@ const navItems = [
 ];
 
 export function AppLayout({ children }: AppLayoutProps) {
+  const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const { logout } = useAuth();
+
+  // Simple Role-Based Access Control for Navigation
+  const filteredNavItems = navItems.filter(item => {
+    if (!user) return false;
+
+    // Admin & Distributor see everything
+    if (user.role === 'admin' || user.role === 'agent') return true;
+
+    // Collaborators (mapped as supervisor in mock) don't see financial modules
+    if (user.role === 'supervisor') {
+      return !['/ventas', '/comisiones'].includes(item.path);
+    }
+
+    return true;
+  });
 
   const handleLogout = () => {
     logout();
     toast.success('Sesión cerrada correctamente');
+    navigate('/login');
   };
 
   return (
@@ -87,7 +104,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         {/* Navigation */}
         <nav className="flex-1 p-3 space-y-1">
-          {navItems.map((item) => {
+          {filteredNavItems.map((item) => {
             const isActive = location.pathname === item.path;
             return (
               <Link
@@ -109,20 +126,20 @@ export function AppLayout({ children }: AppLayoutProps) {
         </nav>
 
         {/* User Info */}
-        {!sidebarCollapsed && (
+        {!sidebarCollapsed && user && (
           <div className="p-4 border-t border-sidebar-border">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-sidebar-accent flex items-center justify-center">
                 <span className="text-sidebar-foreground font-medium">
-                  {currentUser.name.charAt(0)}
+                  {user.name.charAt(0)}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-sidebar-foreground truncate">
-                  {currentUser.name}
+                  {user.name}
                 </p>
                 <p className="text-xs text-sidebar-foreground/60 truncate">
-                  {currentUser.email}
+                  {user.email}
                 </p>
               </div>
               <Button
@@ -147,7 +164,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
         <div className="flex items-center gap-2 text-muted-foreground text-sm">
           <MapPin className="w-4 h-4" />
-          <span>{currentUser.province}</span>
+          <span>{user?.province || 'Procesando...'}</span>
           <Button
             variant="ghost"
             size="icon"
@@ -161,7 +178,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Mobile Bottom Navigation */}
       <nav className="lg:hidden bottom-nav">
-        {navItems.map((item) => {
+        {filteredNavItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
             <Link

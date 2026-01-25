@@ -1,12 +1,31 @@
 import { Lead, Portal, Announcement, KPIData, User } from '@/types/crm';
 
-export const currentUser: User = {
-  id: '1',
-  name: 'María García',
-  email: 'maria.garcia@multicentros.es',
-  province: 'Segovia',
-  role: 'agent',
+export const mockUsers = {
+  admin: {
+    id: 'admin-1',
+    name: 'Admin Central',
+    email: 'admin@multicentros.es',
+    province: 'Central',
+    role: 'admin',
+  } as User,
+  distributor: {
+    id: 'dist-1',
+    name: 'María García',
+    email: 'maria@multicentros.es',
+    province: 'Segovia',
+    role: 'agent', // Maps to Distributor
+  } as User,
+  collaborator: {
+    id: 'collab-1',
+    name: 'Juan Pérez',
+    email: 'juan@multicentros.es',
+    province: 'Segovia',
+    role: 'supervisor', // Using supervisor as Collaborator for now to differentiate
+  } as User
 };
+
+// Default user for backward compatibility
+export const currentUser = mockUsers.distributor;
 
 export const mockKPIs: KPIData = {
   altasRealizadas: 12,

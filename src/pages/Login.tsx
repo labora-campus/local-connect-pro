@@ -16,15 +16,21 @@ export default function Login() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Simulate API call
-        if (username === 'demo' && password === 'demo') {
-            login();
-            toast.success('¡Bienvenido de nuevo!');
+        // Simulate API call and role assignment
+        if (username === 'admin' && password === 'admin') {
+            login('admin');
+            toast.success('Sesión iniciada como Admin Central');
+            navigate('/');
+        } else if (username === 'demo' && password === 'demo') {
+            login('distributor');
+            toast.success('Sesión iniciada como Distribuidor');
+            navigate('/');
+        } else if (username === 'colab' && password === 'colab') {
+            login('collaborator');
+            toast.success('Sesión iniciada como Colaborador');
             navigate('/');
         } else {
-            toast.error('Credenciales incorrectas', {
-                description: 'Prueba con usuario: demo y contraseña: demo'
-            });
+            toast.error('Credenciales incorrectas');
         }
     };
 
@@ -76,10 +82,22 @@ export default function Login() {
                         </Button>
                     </form>
 
-                    <div className="mt-6 p-4 bg-muted/50 rounded-lg text-sm text-center text-muted-foreground">
-                        <p className="font-medium mb-1">Credenciales de prueba:</p>
-                        <code className="bg-background px-2 py-1 rounded border mr-2">demo</code>
-                        <code className="bg-background px-2 py-1 rounded border">demo</code>
+                    <div className="mt-6 p-4 bg-muted/50 rounded-lg text-sm text-center text-muted-foreground space-y-2">
+                        <p className="font-medium">Credenciales de prueba:</p>
+                        <div className="flex justify-center gap-2 flex-wrap">
+                            <div className="space-x-2">
+                                <span className="text-xs font-semibold">Dist:</span>
+                                <code className="bg-background px-2 py-1 rounded border">demo</code>
+                            </div>
+                            <div className="space-x-2">
+                                <span className="text-xs font-semibold">Colab:</span>
+                                <code className="bg-background px-2 py-1 rounded border">colab</code>
+                            </div>
+                            <div className="space-x-2">
+                                <span className="text-xs font-semibold">Admin:</span>
+                                <code className="bg-background px-2 py-1 rounded border">admin</code>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
